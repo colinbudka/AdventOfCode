@@ -18,6 +18,7 @@ public class Day234 {
 		ArrayList<String> winners = new ArrayList<String>();
 		int numstart=0;
 		int numfinish=0;
+		//find winners
 		for (int i=colon; i<=vertbar; i+=1) {
 			if(s.charAt(i)<='9'&&s.charAt(i)>='0') {
 				numstart=i;
@@ -28,6 +29,7 @@ public class Day234 {
 				winners.add(s.substring(numstart,numfinish+1));
 			}
 		}
+		//check your numbers for winners
 		for (int i=vertbar; i<s.length(); i+=1) {
 			if(s.charAt(i)<='9'&&s.charAt(i)>='0') {
 				numstart=i;
@@ -40,7 +42,7 @@ public class Day234 {
 				}
 			}
 		}
-		return  (int)(Math.pow(2, total-1));
+		return  total;
 	}
 	
 	public static void main(String[] args) {
@@ -49,9 +51,20 @@ public class Day234 {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String s = br.readLine();
 			int total = 0;
+			int currentline=1;
+			int result = 0;
+			int[] cards=new int[1000];
 			while (s!=null) {
-				total+=checkWinners(s);
+				cards[currentline]+=1;
+				result=checkWinners(s);
+				for(int i=1;i<=result;i+=1) {
+					cards[currentline+i]+=cards[currentline];
+				}
 				s=br.readLine();
+				currentline+=1;
+			}
+			for (int i=1;i<currentline;i+=1) {
+				total+=cards[i];
 			}
 			System.out.println(total);
 			br.close();
