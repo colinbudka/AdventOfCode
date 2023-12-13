@@ -3,11 +3,13 @@ import java.io.*;
 import java.util.*;
 public class Day235 {
 
-	public static long[] parseSeeds(String s) {
+	public static SeedRange[] parseSeeds(String s) {
 		int seednum=0;
 		int numstart=0;
 		int numfinish=0;
-		long[] seeds = new long[500];
+		long start;
+		long range;
+		SeedRange[] seeds = new SeedRange[500];
 		for (int i=0; i<s.length(); i+=1) {
 			if(s.charAt(i)<='9'&&s.charAt(i)>='0') {
 				numstart=i;
@@ -15,8 +17,17 @@ public class Day235 {
 					numfinish=j;
 					i=j;
 				}
-				seeds[seednum]=Long.parseLong(s.substring(numstart,numfinish+1));
-				seednum+=1;
+				start=Long.parseLong(s.substring(numstart,numfinish+1));
+				i+=2;
+				numstart=i;
+				for(int j=i; j<s.length()&&s.charAt(j)<='9'&&s.charAt(j)>='0'; j+=1) {
+					numfinish=j;
+					i=j;
+				}
+				range=Long.parseLong(s.substring(numstart,numfinish+1));
+				seeds[seednum]= new SeedRange(start,range);
+				seednum+=1;	
+				System.out.println("I am a sheep hurr durr");
 			}
 		}
 		return seeds;
@@ -44,11 +55,12 @@ public class Day235 {
 			GardenMap [] lt = new GardenMap[50];
 			GardenMap [] th = new GardenMap[50];
 			GardenMap [] hl = new GardenMap[50];
-			long[] seeds = parseSeeds(s);
+			SeedRange[] seeds = parseSeeds(s);
 			s=br.readLine();
 			s=br.readLine();
 			s=br.readLine();
 			int index=0;
+			System.out.println("u made it");
 			while(s.length()>0) {
 				ss[index]=new GardenMap(s);
 				s=br.readLine();
@@ -106,19 +118,25 @@ public class Day235 {
 			int i=0;
 			long current=0;
 			long minimum= Long.MAX_VALUE;
-			while(seeds[i]!=0) {
-				current=seeds[i];
-				current=readMap(ss,current);
-				current=readMap(sf,current);
-				current=readMap(fw,current);
-				current=readMap(wl,current);
-				current=readMap(lt,current);
-				current=readMap(th,current);
-				current=readMap(hl,current);
-				if(current<minimum) {
-					minimum=current;
+			long start;
+			long range;
+			while(seeds[i]!=null) {
+				start=seeds[i].start();
+				range=seeds[i].range();
+				for(long j=start;j<start+range;j+=1) {
+					current=j;
+					current=readMap(ss,current);
+					current=readMap(sf,current);
+					current=readMap(fw,current);
+					current=readMap(wl,current);
+					current=readMap(lt,current);
+					current=readMap(th,current);
+					current=readMap(hl,current);
+					if(current<minimum) {
+						minimum=current;
+					}
+					System.out.println(current);
 				}
-				System.out.println(current);
 				i+=1;
 			}
 			System.out.println(minimum);
